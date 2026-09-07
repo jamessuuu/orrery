@@ -40,9 +40,11 @@
             </p>
             <p class="source-line">
               NASA/JPL Small-Body Database, read 2026-09-07 ·
-              <a href="https://ssd-api.jpl.nasa.gov/doc/sbdb_query.html" rel="noopener" target="_blank">source</a> ·
-              <button class="btn btn--sm" id="openReceipts" style="min-height:28px">receipts</button>
+              <a href="https://ssd-api.jpl.nasa.gov/doc/sbdb_query.html" rel="noopener" target="_blank">source</a>
             </p>
+            <div class="row" style="margin-top:0.65rem">
+              <button class="btn" id="openReceipts">receipts — every number, recomputed</button>
+            </div>
           </div>
         </section>
       </div>
@@ -50,6 +52,8 @@
       <!-- controls ---------------------------------------------------------->
       <div class="zone-l">
         <section class="panel" aria-label="Controls">
+          <details class="fold" id="controlsFold" open>
+            <summary>Controls</summary>
           <div class="panel__body scroller">
             <div class="section">
               <label class="label" for="search">Find a body</label>
@@ -140,6 +144,7 @@
               </p>
             </div>
           </div>
+          </details>
         </section>
       </div>
 

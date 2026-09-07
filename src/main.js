@@ -130,6 +130,16 @@ async function boot() {
   updateTierNote();
   updateHeadline();
 
+  // The controls fold shut on small screens so the stage is not buried, and
+  // stay open on large ones. CSS cannot set `open`, so it is set here from the
+  // same breakpoint the stylesheet uses.
+  const fold = $('controlsFold');
+  const syncFold = () => {
+    fold.open = window.innerWidth > 900;
+  };
+  syncFold();
+  window.addEventListener('resize', syncFold);
+
   // Open on the belt seen from twenty degrees above the ecliptic: the angle at
   // which it stops being a ring and becomes a torus with real thickness.
   applyPreset(app, PRESETS[0], true);
@@ -444,7 +454,13 @@ function applyPreset(app, p, animate) {
   app.setExposure(exp);
   $('exposure').value = String(Math.log2(exp).toFixed(2));
   $('exposureOut').textContent = `×${exp.toFixed(2)}`;
-  moveCamera(app, p.camera, p.target, animate && !reduceMotion);
+  // Preset camera distances are chosen for a landscape viewport. The vertical
+  // field of view is fixed, so a portrait window sees LESS horizontally and the
+  // subject overflows unless the camera pulls back by the aspect ratio.
+  const aspect = app.camera.aspect || 1;
+  const k = aspect < 1 ? 1 / aspect : 1;
+  const cam = p.camera.map((v) => v * k);
+  moveCamera(app, cam, p.target, animate && !reduceMotion);
   showCaption(p.caption);
 }
 

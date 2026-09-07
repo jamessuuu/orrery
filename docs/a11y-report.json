@@ -1,0 +1,397 @@
+{
+  "tabOrder": [
+    {
+      "tag": "canvas",
+      "id": "stage",
+      "label": "Orbital map of the catalogued smal",
+      "w": 1600,
+      "h": 1000,
+      "visible": true,
+      "key": "canvas#stage|Orbital map of the catalogued smal"
+    },
+    {
+      "tag": "a",
+      "id": null,
+      "label": "source",
+      "w": 30,
+      "h": 14,
+      "visible": true,
+      "key": "a#null|source"
+    },
+    {
+      "tag": "button",
+      "id": "openReceipts",
+      "label": "receipts — every number, recompute",
+      "w": 231,
+      "h": 44,
+      "visible": true,
+      "key": "button#openReceipts|receipts — every number, recompute"
+    },
+    {
+      "tag": "input",
+      "id": "search",
+      "label": "",
+      "w": 272,
+      "h": 44,
+      "visible": true,
+      "key": "input#search|"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Main belt1,382,216",
+      "w": 272,
+      "h": 34,
+      "visible": true,
+      "key": "button#null|Main belt1,382,216"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Outer main belt50,287",
+      "w": 272,
+      "h": 34,
+      "visible": true,
+      "key": "button#null|Outer main belt50,287"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Inner main belt32,905",
+      "w": 272,
+      "h": 34,
+      "visible": true,
+      "key": "button#null|Inner main belt32,905"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Mars-crossing29,974",
+      "w": 272,
+      "h": 34,
+      "visible": true,
+      "key": "button#null|Mars-crossing29,974"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Apollo24,042",
+      "w": 272,
+      "h": 34,
+      "visible": true,
+      "key": "button#null|Apollo24,042"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Jupiter Trojan16,389",
+      "w": 272,
+      "h": 34,
+      "visible": true,
+      "key": "button#null|Jupiter Trojan16,389"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Amor14,749",
+      "w": 272,
+      "h": 34,
+      "visible": true,
+      "key": "button#null|Amor14,749"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Trans-Neptunian7,285",
+      "w": 272,
+      "h": 34,
+      "visible": true,
+      "key": "button#null|Trans-Neptunian7,285"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Aten3,445",
+      "w": 272,
+      "h": 34,
+      "visible": true,
+      "key": "button#null|Aten3,445"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Centaur1,047",
+      "w": 272,
+      "h": 34,
+      "visible": true,
+      "key": "button#null|Centaur1,047"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Asteroid, other155",
+      "w": 272,
+      "h": 34,
+      "visible": true,
+      "key": "button#null|Asteroid, other155"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Interior-Earth38",
+      "w": 272,
+      "h": 34,
+      "visible": true,
+      "key": "button#null|Interior-Earth38"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Hyperbolic5",
+      "w": 272,
+      "h": 34,
+      "visible": true,
+      "key": "button#null|Hyperbolic5"
+    },
+    {
+      "tag": "input",
+      "id": "brushLo",
+      "label": "Inner edge of the radial shell",
+      "w": 272,
+      "h": 44,
+      "visible": true,
+      "key": "input#brushLo|Inner edge of the radial shell"
+    },
+    {
+      "tag": "input",
+      "id": "brushHi",
+      "label": "Outer edge of the radial shell",
+      "w": 272,
+      "h": 44,
+      "visible": true,
+      "key": "input#brushHi|Outer edge of the radial shell"
+    },
+    {
+      "tag": "input",
+      "id": "zex",
+      "label": "",
+      "w": 272,
+      "h": 44,
+      "visible": true,
+      "key": "input#zex|"
+    },
+    {
+      "tag": "input",
+      "id": "circ",
+      "label": "",
+      "w": 272,
+      "h": 44,
+      "visible": true,
+      "key": "input#circ|"
+    },
+    {
+      "tag": "input",
+      "id": "exposure",
+      "label": "Exposure, in stops",
+      "w": 272,
+      "h": 44,
+      "visible": true,
+      "key": "input#exposure|Exposure, in stops"
+    },
+    {
+      "tag": "input",
+      "id": "psize",
+      "label": "",
+      "w": 272,
+      "h": 44,
+      "visible": true,
+      "key": "input#psize|"
+    },
+    {
+      "tag": "button",
+      "id": "sizeByH",
+      "label": "size by brightness",
+      "w": 99,
+      "h": 32,
+      "visible": true,
+      "key": "button#sizeByH|size by brightness"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "the belt",
+      "w": 53,
+      "h": 32,
+      "visible": true,
+      "key": "button#null|the belt"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Kirkwood gaps",
+      "w": 85,
+      "h": 32,
+      "visible": true,
+      "key": "button#null|Kirkwood gaps"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "Trojans",
+      "w": 50,
+      "h": 32,
+      "visible": true,
+      "key": "button#null|Trojans"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "inclination",
+      "w": 65,
+      "h": 32,
+      "visible": true,
+      "key": "button#null|inclination"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "near-Earth",
+      "w": 66,
+      "h": 32,
+      "visible": true,
+      "key": "button#null|near-Earth"
+    },
+    {
+      "tag": "button",
+      "id": null,
+      "label": "outer system",
+      "w": 77,
+      "h": 32,
+      "visible": true,
+      "key": "button#null|outer system"
+    },
+    {
+      "tag": "button",
+      "id": "stageToggle",
+      "label": "daylight",
+      "w": 55,
+      "h": 32,
+      "visible": true,
+      "key": "button#stageToggle|daylight"
+    },
+    {
+      "tag": "button",
+      "id": "loadAll",
+      "label": "load all",
+      "w": 51,
+      "h": 32,
+      "visible": true,
+      "key": "button#loadAll|load all"
+    },
+    {
+      "tag": "a",
+      "id": null,
+      "label": "James Lorenz Santos",
+      "w": 94,
+      "h": 14,
+      "visible": true,
+      "key": "a#null|James Lorenz Santos"
+    },
+    {
+      "tag": "a",
+      "id": null,
+      "label": "LinkedIn",
+      "w": 38,
+      "h": 14,
+      "visible": true,
+      "key": "a#null|LinkedIn"
+    },
+    {
+      "tag": "button",
+      "id": "playToggle",
+      "label": "Play the orbital animation",
+      "w": 44,
+      "h": 44,
+      "visible": true,
+      "key": "button#playToggle|Play the orbital animation"
+    },
+    {
+      "tag": "input",
+      "id": "scrub",
+      "label": "Days from the reference epoch",
+      "w": 927,
+      "h": 44,
+      "visible": true,
+      "key": "input#scrub|Days from the reference epoch"
+    },
+    {
+      "tag": "button",
+      "id": "slower",
+      "label": "Slower",
+      "w": 25,
+      "h": 32,
+      "visible": true,
+      "key": "button#slower|Slower"
+    },
+    {
+      "tag": "button",
+      "id": "faster",
+      "label": "Faster",
+      "w": 25,
+      "h": 32,
+      "visible": true,
+      "key": "button#faster|Faster"
+    },
+    {
+      "tag": "button",
+      "id": "resetTime",
+      "label": "epoch",
+      "w": 46,
+      "h": 32,
+      "visible": true,
+      "key": "button#resetTime|epoch"
+    }
+  ],
+  "reachableControls": 39,
+  "focusRing": {
+    "outlineStyle": "solid",
+    "outlineWidth": "1.6px",
+    "outlineColor": "oklch(0.8 0.152 74)"
+  },
+  "smallTargets": [
+    {
+      "id": null,
+      "label": "source",
+      "w": 30,
+      "h": 14
+    },
+    {
+      "id": null,
+      "label": "James Lorenz Santos",
+      "w": 94,
+      "h": 14
+    },
+    {
+      "id": null,
+      "label": "LinkedIn",
+      "w": 38,
+      "h": 14
+    }
+  ],
+  "receiptsSheet": {
+    "opensOnClick": true,
+    "closesOnEscape": true
+  },
+  "keyboardDrivesTime": {
+    "before": 81.18599999982135,
+    "after": 102.15000000000018,
+    "changed": true
+  },
+  "reducedMotion": {
+    "animationAutostarts": false,
+    "timeDaysAfter2500ms": 0,
+    "timeDaysAfter4000ms": 0,
+    "rateDaysPerSecond": 0,
+    "timeControlStillOperable": true
+  }
+}

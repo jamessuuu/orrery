@@ -74,8 +74,7 @@ The blind search also finds the **4:1 at ~2.078 AU**, which is the inner edge of
 ### The gaps are visible in the rendered image, not just in the histogram
 
 `scripts/shoot.mjs` reads the framebuffer back, averages luminance over concentric one-pixel annuli
-about the Sun, and looks for minima. On the plan view it finds dark lanes at **2.061, 2.507 and
-2.934 AU** — the 4:1, 3:1 and 7:3, within 0.024 AU of their predicted positions. The 5:2 and 2:1
+about the Sun, and looks for minima. On the plan view it finds dark lanes at **2.061, 2.507, 2.943 AU** — the 4:1, 3:1 and 7:3, within 0.015 AU of their predicted positions. The 5:2 and 2:1
 do not clear the 20 % contrast threshold in pixel space; the 2:1 sits at the belt's outer edge
 where there is no outer shoulder to measure against.
 
@@ -112,9 +111,9 @@ Measured on this machine, in Chromium, at 1600 × 1000 CSS px, devicePixelRatio 
 | View | Bodies drawn | GPU time / frame | Presented frame interval |
 |---|---|---|---|
 | Preview tier | 120,000 | **0.43 ms** | 5.00 ms (200 fps, vsync ceiling) |
-| Full catalogue, default view | **1,562,531** | **5.08 ms** | 5.00 ms (200 fps) |
+| Full catalogue, default view | **1,562,531** | **5.00 ms** | 5.00 ms (200 fps) |
 | Full catalogue, plan view (circularised) | 1,562,531 | 3.17 ms | 5.00 ms (200 fps) |
-| Full catalogue, vertical exaggeration ×14 | 1,562,531 | 3.00 ms | 5.00 ms (200 fps) |
+| Full catalogue, vertical exaggeration ×14 | 1,562,531 | 3.01 ms | 5.00 ms (200 fps) |
 | Full catalogue, class-filtered views | 1,562,531 | 0.96 – 1.02 ms | 5.00 ms (200 fps) |
 
 An earlier framing that put the belt across the full viewport at a closer camera measured
@@ -139,17 +138,17 @@ reported 10,000 fps for a scene that was drawing nothing at all.
 
 | | Raw | Gzip | Brotli |
 |---|---|---|---|
-| JavaScript | 591,743 B | **153,290 B** | 127,166 B |
-| CSS | 10,645 B | 2,991 B | 2,574 B |
-| HTML (including the whole static fallback) | 123,074 B | 24,161 B | 18,018 B |
-| **Code shell total** | **725,462 B** | **180,442 B** | 147,758 B |
+| JavaScript | 591,902 B | **153,354 B** | 127,053 B |
+| CSS | 11,786 B | 3,281 B | 2,847 B |
+| HTML (including the whole static fallback) | 123,266 B | 24,203 B | 18,048 B |
+| **Code shell total** | **726,954 B** | **180,838 B** | 147,948 B |
 | Preview tier (120,000 bodies) | 1,680,000 B | 1,269,911 B | 1,224,122 B |
-| **First paint total** | **2,415,606 B** | **1,453,547 B** | 1,374,629 B |
+| **First paint total** | **2,417,098 B** | **1,453,943 B** | 1,374,819 B |
 | Full catalogue, on explicit request | 21,875,434 B | 16,341,027 B | 15,777,145 B |
 
 For comparison, the reference this was benchmarked against (`human-atlas-seven.vercel.app`) ships
-**916,370 B raw / 260,791 B gzip**. This ships **725,462 B raw / 180,442 B gzip** of code — 21 %
-smaller raw, 31 % smaller gzipped — and that figure carries a 123 KB build-time static fallback
+**916,370 B raw / 260,791 B gzip**. This ships **726,954 B raw / 180,838 B gzip** of code — 21 %
+smaller raw, 31 % smaller gzipped — and that figure carries a 120 KB build-time static fallback
 the reference does not have.
 
 ---
@@ -352,6 +351,12 @@ is accepted — a blank canvas that saved successfully is a failure, not a pass.
 | `10-selection-ceres.png` | A body selected by name with its orbit drawn |
 | `11-narrow.png` | 420 CSS px |
 | `12-no-javascript.png` | JavaScript disabled |
+| `13-reduced-motion.png` | `prefers-reduced-motion: reduce` — the animation does not autostart |
+
+`docs/a11y-report.json` records a keyboard traversal of the live page: **39 reachable controls**, a
+painted focus ring, Escape closing the receipts sheet, the time control driven entirely from the
+keyboard, and reduced motion leaving the rate at 0 while every view stays reachable. The only
+controls under 32 px are three inline links inside sentences, which WCAG 2.5.8 exempts.
 
 ---
 
@@ -367,6 +372,15 @@ is accepted — a blank canvas that saved successfully is a failure, not a pass.
   not fit the quantisation ranges chosen for the belt, so they are not drawn.
 - **No count-up animations on any measured number.** 1,562,531 renders as 1,562,531 on the first
   frame. The geometry settles; the numeral does not.
+
+---
+
+## Portfolio card
+
+**Teaser:** Solved every frame
+
+**Tagline:** Every catalogued small body in the solar system, positioned each frame by solving
+Kepler's equation on the GPU from its own published orbital elements.
 
 ---
 

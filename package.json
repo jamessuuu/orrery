@@ -15,7 +15,10 @@
     "pack": "node --max-old-space-size=6144 scripts/pack.mjs",
     "check": "node --max-old-space-size=6144 scripts/check.mjs",
     "accuracy": "node scripts/accuracy.mjs",
-    "shoot": "node scripts/shoot.mjs"
+    "shoot": "node scripts/shoot.mjs",
+    "a11y": "node scripts/a11y-probe.mjs",
+    "kepler": "node scripts/kepler-probe.mjs",
+    "data": "bash scripts/fetch.sh && npm run audit && npm run pack && node scripts/extract-planets.mjs && node scripts/build-fallback.mjs"
   },
   "dependencies": { "three": "0.185.1" },
   "devDependencies": { "vite": "^7.1.5" }
