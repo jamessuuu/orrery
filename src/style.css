@@ -558,16 +558,14 @@ body.is-fallback .hud, body.is-fallback .stage { display: none; }
   .wordmark { font-size: 1.2rem; margin-bottom: 0.3rem; }
   .panel__body { padding: 0.7rem; }
 
-  /* Views become one horizontally scrolling rail rather than a wrapping block
-     that eats half the screen. */
-  #presets {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scrollbar-width: none;
-    padding-bottom: 0.15rem;
-  }
-  #presets::-webkit-scrollbar { display: none; }
-  #presets .btn { flex: none; }
+  /* Views WRAP on phones. They used to be a nowrap overflow-x rail, which cost
+     a real preset: at 390px the sixth view ("outer system") sat at x=371-448,
+     entirely off-screen, with no fade, arrow, or scrollbar to hint at it — and
+     because the toggles below it DO wrap, the rail read as a finished two-row
+     block. A view nobody can discover is a view that does not ship. Wrapping
+     costs one extra 32px row; tightening the buttons pays most of that back. */
+  #presets { flex-wrap: wrap; row-gap: 0.35rem; }
+  #presets .btn { padding: 0.3rem 0.45rem; }
 
   .caption {
     left: 0.5rem;
