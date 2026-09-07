@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en" data-stage="dusk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>orrery — every catalogued small body, solved every frame</title>
+    <meta
+      name="description"
+      content="{{RENDERABLE}} catalogued small bodies from the NASA/JPL Small-Body Database, positioned every frame by solving Kepler's equation on the GPU from their own published orbital elements. The Kirkwood gaps appear as empty rings."
+    />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#080a12" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content="orrery" />
+    <meta property="og:description" content="{{RENDERABLE}} small bodies, propagated from their own orbital elements on the GPU." />
+    <meta property="og:type" content="website" />
+    <noscript>
+      <style>
+        body { overflow: auto !important; }
+        .hud, .stage, .caption { display: none !important; }
+        .fallback { display: block !important; }
+      </style>
+    </noscript>
+  </head>
+  <body>
+    <canvas class="stage" id="stage" aria-label="Orbital map of the catalogued small bodies of the solar system"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <!-- identity ---------------------------------------------------------->
+      <div class="zone-tl">
+        <section class="panel" aria-labelledby="idTitle">
+          <div class="panel__body">
+            <h1 class="wordmark" id="idTitle"><span class="wordmark__dot" aria-hidden="true"></span>orrery</h1>
+            <p class="headline" id="headlineCount">{{RENDERABLE_FMT}}</p>
+            <p class="headline--sub" id="headlineSub">catalogued small bodies</p>
+            <p class="lede">
+              Nothing here ships a position. Every body is placed by solving Kepler’s equation on the GPU from its own
+              published orbital elements, every frame.
+            </p>
+            <p class="source-line">
+              NASA/JPL Small-Body Database, read 2026-09-07 ·
+              <a href="https://ssd-api.jpl.nasa.gov/doc/sbdb_query.html" rel="noopener" target="_blank">source</a> ·
+              <button class="btn btn--sm" id="openReceipts" style="min-height:28px">receipts</button>
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <!-- controls ---------------------------------------------------------->
+      <div class="zone-l">
+        <section class="panel" aria-label="Controls">
+          <div class="panel__body scroller">
+            <div class="section">
+              <label class="label" for="search">Find a body</label>
+              <div class="search">
+                <input
+                  id="search"
+                  type="search"
+                  autocomplete="off"
+                  spellcheck="false"
+                  placeholder="Ceres, Hilda, Achilles…"
+                  aria-describedby="searchNote"
+                />
+                <ul class="results" id="results" role="listbox" aria-label="Search results"></ul>
+              </div>
+              <p class="notice" id="searchNote">Index covers the {{NAMED_FMT}} bodies that have been given a name.</p>
+            </div>
+
+            <div class="section">
+              <span class="label" id="popLabel">Populations</span>
+              <div class="classes" id="classes" role="group" aria-labelledby="popLabel"></div>
+            </div>
+
+            <div class="section">
+              <div class="slider-head">
+                <label class="label" for="brushLo">Radial shell</label>
+                <span class="readout" id="brushOut">0.46 – 14513 AU</span>
+              </div>
+              <input id="brushLo" type="range" min="0" max="1000" value="0" aria-label="Inner edge of the radial shell" />
+              <input id="brushHi" type="range" min="0" max="1000" value="1000" aria-label="Outer edge of the radial shell" />
+              <p class="notice">
+                Bodies are stored sorted by semi-major axis, so a shell is a contiguous run of vertices and the brush
+                costs one draw-range change rather than a per-body test.
+              </p>
+            </div>
+
+            <div class="section">
+              <div class="slider-head">
+                <label class="label" for="zex">Vertical exaggeration</label>
+                <span class="readout" id="zexOut">×1</span>
+              </div>
+              <input id="zex" type="range" min="1" max="30" step="0.5" value="1" />
+              <p class="notice">
+                Stretches the ecliptic-normal axis only. Nothing is displaced: at ×1 every body sits at its true
+                position. Median inclination in this catalogue is {{MEDIAN_INC}}°.
+              </p>
+            </div>
+
+            <div class="section">
+              <div class="slider-head">
+                <label class="label" for="circ">Circularise orbits</label>
+                <span class="readout" id="circOut">0%</span>
+              </div>
+              <input id="circ" type="range" min="0" max="100" step="1" value="0" aria-describedby="circNote" />
+              <p class="notice" id="circNote">
+                <strong>This moves bodies away from where they are.</strong> The resonance gaps are gaps in semi-major
+                axis, but a body’s distance from the Sun swings between perihelion and aphelion, so at a median
+                eccentricity of {{MEDIAN_ECC}} a true-position plot smears every lane. Pulling this to 100% sets each
+                eccentricity to zero while keeping a, i and the orientation, which parks every body at its own
+                semi-major axis and makes the gaps sharp. The readout says which you are looking at.
+              </p>
+            </div>
+
+            <div class="section">
+              <div class="slider-head">
+                <label class="label" for="exposure">Exposure</label>
+                <span class="readout" id="exposureOut">×1.0</span>
+              </div>
+              <input id="exposure" type="range" min="-2" max="2" step="0.05" value="0" aria-label="Exposure, in stops" />
+              <p class="notice">
+                Brightness is a density map: a pixel is bright because many bodies land on it. Per-point opacity is
+                therefore scaled by the number of bodies loaded, so that switching tiers changes the resolution of the
+                picture and not its exposure.
+              </p>
+            </div>
+
+            <div class="section">
+              <div class="slider-head">
+                <label class="label" for="psize">Point size</label>
+                <span class="readout" id="psizeOut">×1.0</span>
+              </div>
+              <input id="psize" type="range" min="0.4" max="3" step="0.1" value="1" />
+              <div class="row" style="margin-top:0.5rem">
+                <button class="btn btn--sm" id="sizeByH" aria-pressed="false">size by brightness</button>
+              </div>
+              <p class="notice">
+                Off by default: when point size varies, brightness stops being a pure density map and the gaps get
+                confounded with the size of the bodies around them.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- views ------------------------------------------------------------->
+      <div class="zone-tr">
+        <section class="panel" aria-label="Views">
+          <div class="panel__body">
+            <span class="label">Views</span>
+            <div class="row" id="presets"></div>
+            <div class="row" style="margin-top:0.75rem">
+              <button class="btn btn--sm" id="stageToggle" aria-pressed="false">daylight</button>
+              <button class="btn btn--sm" id="loadAll">load all</button>
+            </div>
+            <p class="notice" id="tierNote"></p>
+            <div class="bar" id="loadBar" hidden><div class="bar__fill" id="loadFill"></div></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- readout ----------------------------------------------------------->
+      <div class="zone-br">
+        <section class="panel" aria-label="Readout" aria-live="polite">
+          <div class="panel__body">
+            <span class="label" id="readoutTitle">Instrument</span>
+            <dl class="kv" id="readout"></dl>
+            <p class="notice" id="viewState" style="margin-top:0.6rem">True positions at the shown date.</p>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel__body">
+            <p class="aj-attribution">
+              <svg class="aj-attribution__mark" viewBox="0 0 64 64" width="16" height="16" role="img" aria-label="Agent James"><path fill="currentColor" fill-rule="evenodd" d="M4 16h8v4h-8zM52 16h8v4h-8zM16 4h4v8h-4zM16 52h4v8h-4zM4 28h8v4h-8zM52 28h8v4h-8zM28 4h4v8h-4zM28 52h4v8h-4zM4 40h8v4h-8zM52 40h8v4h-8zM40 4h4v8h-4zM40 52h4v8h-4zM12 12h40v40h-40zM16 16v32h32v-32zM36 20h4v20h-16v-4h12z"/><rect x="20" y="20" width="4" height="4" fill="var(--signal, #B45309)"/></svg>Built by <a href="https://agentjames.vercel.app" rel="me noopener">James Lorenz Santos</a><span class="aj-attribution__sep" aria-hidden="true">&middot;</span><a href="https://www.linkedin.com/in/james-lorenz-santos-720776251/" rel="me noopener" target="_blank">LinkedIn</a>
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <!-- time -------------------------------------------------------------->
+      <div class="zone-b">
+        <section class="panel" aria-label="Time">
+          <div class="panel__body">
+            <div class="time">
+              <button class="btn btn--icon" id="playToggle" aria-pressed="false" aria-label="Play the orbital animation">▶</button>
+              <span class="time__date" id="dateOut">—</span>
+              <input
+                class="time__scrub"
+                id="scrub"
+                type="range"
+                min="-18262"
+                max="18262"
+                step="1"
+                value="0"
+                aria-label="Days from the reference epoch"
+              />
+              <span class="readout" id="rateOut">paused</span>
+              <button class="btn btn--sm" id="slower" aria-label="Slower">−</button>
+              <button class="btn btn--sm" id="faster" aria-label="Faster">+</button>
+              <button class="btn btn--sm" id="resetTime">epoch</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="caption" id="caption" role="status"></div>
+
+    <!-- receipts ------------------------------------------------------------>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+      <button class="btn sheet__close" id="closeReceipts">close</button>
+      <div class="sheet__inner" id="sheetInner"><h2 id="sheetTitle">Receipts</h2></div>
+    </div>
+
+    <!-- static fallback: real HTML, not injected --------------------------->
+    <div class="fallback" id="fallback">
+      <!--ORRERY:FALLBACK-->
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

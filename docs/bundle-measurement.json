@@ -1,0 +1,123 @@
+{
+  "files": {
+    "js": [
+      {
+        "rel": "assets/index-BODyG6vk.js",
+        "raw": 591743,
+        "gzip": 153290,
+        "brotli": 127166
+      }
+    ],
+    "css": [
+      {
+        "rel": "assets/index-BIdxZHQt.css",
+        "raw": 10645,
+        "gzip": 2991,
+        "brotli": 2574
+      }
+    ],
+    "html": [
+      {
+        "rel": "index.html",
+        "raw": 123074,
+        "gzip": 24161,
+        "brotli": 18018
+      }
+    ],
+    "data": [
+      {
+        "rel": "data/orrery-full.bin",
+        "raw": 21875434,
+        "gzip": 16341027,
+        "brotli": 15777145
+      },
+      {
+        "rel": "data/orrery-manifest.json",
+        "raw": 6714,
+        "gzip": 2057,
+        "brotli": 1731
+      },
+      {
+        "rel": "data/orrery-names.json",
+        "raw": 708898,
+        "gzip": 329351,
+        "brotli": 275881
+      },
+      {
+        "rel": "data/orrery-preview-map.bin",
+        "raw": 480000,
+        "gzip": 108166,
+        "brotli": 94243
+      },
+      {
+        "rel": "data/orrery-preview.bin",
+        "raw": 1680000,
+        "gzip": 1269911,
+        "brotli": 1224122
+      },
+      {
+        "rel": "data/planets.json",
+        "raw": 3430,
+        "gzip": 1137,
+        "brotli": 1018
+      }
+    ],
+    "other": [
+      {
+        "rel": "favicon.svg",
+        "raw": 523,
+        "gzip": 258,
+        "brotli": 225
+      }
+    ]
+  },
+  "js": {
+    "raw": 591743,
+    "gzip": 153290,
+    "brotli": 127166
+  },
+  "css": {
+    "raw": 10645,
+    "gzip": 2991,
+    "brotli": 2574
+  },
+  "html": {
+    "raw": 123074,
+    "gzip": 24161,
+    "brotli": 18018
+  },
+  "codeShell": {
+    "raw": 725462,
+    "gzip": 180442,
+    "brotli": 147758
+  },
+  "preview": {
+    "rel": "data/orrery-preview.bin",
+    "raw": 1680000,
+    "gzip": 1269911,
+    "brotli": 1224122
+  },
+  "full": {
+    "rel": "data/orrery-full.bin",
+    "raw": 21875434,
+    "gzip": 16341027,
+    "brotli": 15777145
+  },
+  "manifest": {
+    "rel": "data/orrery-manifest.json",
+    "raw": 6714,
+    "gzip": 2057,
+    "brotli": 1731
+  },
+  "planets": {
+    "rel": "data/planets.json",
+    "raw": 3430,
+    "gzip": 1137,
+    "brotli": 1018
+  },
+  "firstPaint": {
+    "raw": 2415606,
+    "gzip": 1453547,
+    "brotli": 1374629
+  }
+}

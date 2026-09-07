@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+
+# The raw API responses are 276 MB and are reproducible with scripts/fetch.sh.
+# data/audit.json IS committed: it is the receipt scripts/check.mjs diffs against.
+data/*.json
+!data/audit.json
+data/*.txt
+data/*.html
+
+# scratch renders from tuning passes
+docs/tmp-*.png

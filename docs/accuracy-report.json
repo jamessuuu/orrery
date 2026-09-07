@@ -1,0 +1,245 @@
+{
+  "measuredAt": "2026-09-07T04:07:55.314Z",
+  "gpu": "ANGLE (AMD, AMD Radeon RX 9060 XT (0x00007590) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "pageErrors": [],
+  "sample": {
+    "bodies": 2000,
+    "stratifiedBy": "eccentricity decile, so high-e bodies are over-represented relative to the catalogue",
+    "evaluatedAtDaysFromReferenceEpoch": [
+      0,
+      3652.5
+    ]
+  },
+  "solverConfiguration": {
+    "method": "Mikkola cubic starter, 3 Halley iterations, float32 in the vertex shader",
+    "sourceOfTruth": "src/shaders.js PROPAGATE_GLSL, shared verbatim with the drawing shader",
+    "cpuReference": "200-step bisection in float64 (cannot diverge; Newton from E=M does)",
+    "starterChoice": "A Danby starter with the same 3 Halley steps was measured at 7.63e-2 rad of eccentric-anomaly error at e = 0.9996, the highest eccentricity in this catalogue. Mikkola holds 1.3e-15 rad there. scripts/kepler-probe.mjs prints the comparison."
+  },
+  "errorBudgetAU": {
+    "0": {
+      "daysFromReferenceEpoch": 0,
+      "quantisation16Bit": {
+        "n": 2000,
+        "medianAU": 0.0001246,
+        "p95AU": 0.0003683,
+        "p99AU": 0.002936,
+        "maxAU": 0.01613
+      },
+      "shaderSolverFloat32": {
+        "n": 2000,
+        "medianAU": 6.28e-7,
+        "p95AU": 0.000001932,
+        "p99AU": 0.00001435,
+        "maxAU": 0.0001413
+      },
+      "total": {
+        "n": 2000,
+        "medianAU": 0.0001244,
+        "p95AU": 0.0003679,
+        "p99AU": 0.002936,
+        "maxAU": 0.01599
+      },
+      "byEccentricityDecile": [
+        {
+          "band": "0.0-0.1",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.0001147,
+          "maxSolverErrorAU": 0.000001689
+        },
+        {
+          "band": "0.1-0.2",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.0000913,
+          "maxSolverErrorAU": 0.000001636
+        },
+        {
+          "band": "0.2-0.3",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.0000913,
+          "maxSolverErrorAU": 0.000001884
+        },
+        {
+          "band": "0.3-0.4",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.00009596,
+          "maxSolverErrorAU": 0.000001667
+        },
+        {
+          "band": "0.4-0.5",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.0001239,
+          "maxSolverErrorAU": 0.000001938
+        },
+        {
+          "band": "0.5-0.6",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.0001524,
+          "maxSolverErrorAU": 0.00000216
+        },
+        {
+          "band": "0.6-0.7",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.0001732,
+          "maxSolverErrorAU": 0.0001001
+        },
+        {
+          "band": "0.7-0.8",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.0001745,
+          "maxSolverErrorAU": 0.0001413
+        },
+        {
+          "band": "0.8-0.9",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.00021,
+          "maxSolverErrorAU": 0.00001435
+        },
+        {
+          "band": "0.9-1.0",
+          "bodies": 20,
+          "medianTotalErrorAU": 0.0001061,
+          "maxSolverErrorAU": 0.000001414
+        }
+      ]
+    },
+    "3652.5": {
+      "daysFromReferenceEpoch": 3652.5,
+      "quantisation16Bit": {
+        "n": 2000,
+        "medianAU": 0.002375,
+        "p95AU": 0.007196,
+        "p99AU": 0.009883,
+        "maxAU": 0.02422
+      },
+      "shaderSolverFloat32": {
+        "n": 2000,
+        "medianAU": 0.000005738,
+        "p95AU": 0.00001778,
+        "p99AU": 0.00002785,
+        "maxAU": 0.00007295
+      },
+      "total": {
+        "n": 2000,
+        "medianAU": 0.002378,
+        "p95AU": 0.007201,
+        "p99AU": 0.009877,
+        "maxAU": 0.02426
+      },
+      "byEccentricityDecile": [
+        {
+          "band": "0.0-0.1",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.003265,
+          "maxSolverErrorAU": 0.00001938
+        },
+        {
+          "band": "0.1-0.2",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.003043,
+          "maxSolverErrorAU": 0.00002418
+        },
+        {
+          "band": "0.2-0.3",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.002949,
+          "maxSolverErrorAU": 0.00002785
+        },
+        {
+          "band": "0.3-0.4",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.002642,
+          "maxSolverErrorAU": 0.000031
+        },
+        {
+          "band": "0.4-0.5",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.00268,
+          "maxSolverErrorAU": 0.00003326
+        },
+        {
+          "band": "0.5-0.6",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.002443,
+          "maxSolverErrorAU": 0.00002813
+        },
+        {
+          "band": "0.6-0.7",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.001787,
+          "maxSolverErrorAU": 0.00005071
+        },
+        {
+          "band": "0.7-0.8",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.001697,
+          "maxSolverErrorAU": 0.00005844
+        },
+        {
+          "band": "0.8-0.9",
+          "bodies": 220,
+          "medianTotalErrorAU": 0.001793,
+          "maxSolverErrorAU": 0.00007295
+        },
+        {
+          "band": "0.9-1.0",
+          "bodies": 20,
+          "medianTotalErrorAU": 0.00154,
+          "maxSolverErrorAU": 0.0000352
+        }
+      ]
+    }
+  },
+  "worstSolverCase": {
+    "atDaysFromEpoch": 0,
+    "semiMajorAxisAU": 148.876668,
+    "eccentricity": 0.724304,
+    "inclinationDeg": 33.5579,
+    "solverErrorAU": 0.00014128613750595388,
+    "quantisationErrorAU": 0.01612793872242726,
+    "totalErrorAU": 0.01599038126226147
+  },
+  "eccentricAnomalyErrorVsEccentricity": [
+    {
+      "eccentricity": 0,
+      "worstEccentricAnomalyErrorRad": 4.441e-16
+    },
+    {
+      "eccentricity": 0.2,
+      "worstEccentricAnomalyErrorRad": 4.441e-16
+    },
+    {
+      "eccentricity": 0.4,
+      "worstEccentricAnomalyErrorRad": 4.441e-16
+    },
+    {
+      "eccentricity": 0.6,
+      "worstEccentricAnomalyErrorRad": 4.441e-16
+    },
+    {
+      "eccentricity": 0.8,
+      "worstEccentricAnomalyErrorRad": 4.441e-16
+    },
+    {
+      "eccentricity": 0.9,
+      "worstEccentricAnomalyErrorRad": 4.441e-16
+    },
+    {
+      "eccentricity": 0.95,
+      "worstEccentricAnomalyErrorRad": 4.441e-16
+    },
+    {
+      "eccentricity": 0.99,
+      "worstEccentricAnomalyErrorRad": 8.882e-16
+    },
+    {
+      "eccentricity": 0.999,
+      "worstEccentricAnomalyErrorRad": 6.661e-16
+    },
+    {
+      "eccentricity": 0.9996,
+      "worstEccentricAnomalyErrorRad": 7.772e-16
+    }
+  ],
+  "catalogueMaxEccentricity": 0.9996
+}

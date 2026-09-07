@@ -1,0 +1,22 @@
+{
+  "name": "orrery",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Every catalogued small body in the solar system, propagated from its own orbital elements on the GPU.",
+  "license": "MIT",
+  "author": "James Lorenz Santos",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/measure-bundle.mjs",
+    "preview": "vite preview --port 4173 --strictPort",
+    "audit": "node --max-old-space-size=6144 scripts/audit.mjs",
+    "pack": "node --max-old-space-size=6144 scripts/pack.mjs",
+    "check": "node --max-old-space-size=6144 scripts/check.mjs",
+    "accuracy": "node scripts/accuracy.mjs",
+    "shoot": "node scripts/shoot.mjs"
+  },
+  "dependencies": { "three": "0.185.1" },
+  "devDependencies": { "vite": "^7.1.5" }
+}

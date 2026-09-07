@@ -1,0 +1,296 @@
+{
+  "generatedAt": "2026-09-07T04:09:50.718Z",
+  "generator": "scripts/pack.mjs",
+  "referenceEpoch": {
+    "jd": 2461200.5,
+    "iso": "2026-06-09T00:00:00.000Z",
+    "chosenBecause": "it is the published epoch shared by the largest share of the catalogue",
+    "sharedBy": 1467175
+  },
+  "epochHandling": {
+    "policy": "every body is advanced from its own published epoch to the reference epoch at build time, in float64, by exact two-body mean-motion",
+    "distinctEpochsInSource": 6334,
+    "onReferenceEpoch": 1467175,
+    "within1Year": 27469,
+    "within10Years": 31705,
+    "over10Years": 36182,
+    "oldestEpochAgeDays": 36149
+  },
+  "quantisation": {
+    "semiMajorAxis": {
+      "bits": 16,
+      "scale": "log",
+      "minAU": 0.3,
+      "maxAU": 20000
+    },
+    "eccentricity": {
+      "bits": 16,
+      "scale": "linear",
+      "min": 0,
+      "max": 1
+    },
+    "inclination": {
+      "bits": 16,
+      "scale": "linear",
+      "minDeg": 0,
+      "maxDeg": 180
+    },
+    "node": {
+      "bits": 16,
+      "scale": "linear",
+      "minDeg": 0,
+      "maxDeg": 360
+    },
+    "argPeriapsis": {
+      "bits": 16,
+      "scale": "linear",
+      "minDeg": 0,
+      "maxDeg": 360
+    },
+    "meanAnomalyAtReferenceEpoch": {
+      "bits": 16,
+      "scale": "linear",
+      "minDeg": 0,
+      "maxDeg": 360
+    },
+    "absoluteMagnitude": {
+      "bits": 8,
+      "min": -2,
+      "max": 34.5,
+      "missingSentinel": 255
+    },
+    "dynamicalClass": {
+      "bits": 8,
+      "table": "classes"
+    }
+  },
+  "layout": {
+    "order": "column major, ascending semi-major axis",
+    "columns": [
+      "a",
+      "e",
+      "i",
+      "om",
+      "w",
+      "M0",
+      "classH"
+    ],
+    "columnType": "Uint16",
+    "classHPacking": "(classIndex << 8) | magnitudeByte"
+  },
+  "classes": [
+    "MBA",
+    "OMB",
+    "MCA",
+    "AMO",
+    "IMB",
+    "TJN",
+    "CEN",
+    "APO",
+    "ATE",
+    "AST",
+    "TNO",
+    "IEO",
+    "HYA"
+  ],
+  "classCounts": {
+    "MBA": 1382216,
+    "OMB": 50287,
+    "IMB": 32905,
+    "MCA": 29974,
+    "APO": 24042,
+    "TJN": 16389,
+    "AMO": 14749,
+    "TNO": 7285,
+    "ATE": 3445,
+    "CEN": 1047,
+    "AST": 155,
+    "IEO": 38,
+    "HYA": 5
+  },
+  "tiers": {
+    "preview": {
+      "file": "data/orrery-preview.bin",
+      "bodies": 120000,
+      "bytesPerBody": 14,
+      "bytes": 1680000,
+      "deltaCodedSemiMajorAxis": true,
+      "measured": {
+        "plain": {
+          "raw": 1680000,
+          "gzip": 1276318,
+          "brotli": 1228643
+        },
+        "delta": {
+          "raw": 1680000,
+          "gzip": 1269911,
+          "brotli": 1224122
+        }
+      },
+      "bodiesAdvancedFromOwnEpoch": 7377,
+      "maxEpochAdvanceDays": 33103
+    },
+    "full": {
+      "file": "data/orrery-full.bin",
+      "bodies": 1562531,
+      "bytesPerBody": 14,
+      "bytes": 21875434,
+      "deltaCodedSemiMajorAxis": true,
+      "measured": {
+        "plain": {
+          "raw": 21875434,
+          "gzip": 16360514,
+          "brotli": 15804184
+        },
+        "delta": {
+          "raw": 21875434,
+          "gzip": 16341027,
+          "brotli": 15777145
+        }
+      },
+      "bodiesAdvancedFromOwnEpoch": 95356,
+      "maxEpochAdvanceDays": 36149
+    }
+  },
+  "search": {
+    "file": "data/orrery-names.json",
+    "entries": 26446,
+    "bytes": 708898,
+    "gzip": 329310
+  },
+  "previewMap": {
+    "file": "data/orrery-preview-map.bin",
+    "entries": 120000,
+    "encoding": "Uint32 deltas of the position in the full tier",
+    "measured": {
+      "raw": 480000,
+      "gzip": 108166,
+      "brotli": 94243
+    }
+  },
+  "sampleSeed": 20260907,
+  "previewNote": "uniform random sample, seed 20260907, drawn from the renderable set; NOT a brightness cut (see README)",
+  "sourceFile": "data/sbdb-asteroids-fullprec.json",
+  "receipts": {
+    "binAU": 0.005,
+    "smoothWindowAU": 0.025,
+    "jupiterA": 5.202887,
+    "medianInclinationDeg": 7.8761,
+    "medianEccentricity": 0.1473,
+    "inclinedOver30Deg": 13044,
+    "aMinAU": 0.461763,
+    "aMaxAU": 14513.0071,
+    "kirkwood": [
+      {
+        "resonance": "3:1",
+        "aAU": 2.5013,
+        "binRawInGap": 233,
+        "binRawInner": 7560,
+        "binRawOuter": 10783,
+        "smoothedInGap": 613.4,
+        "smoothedInner": 7676,
+        "smoothedOuter": 10982.2,
+        "depletionFactor": 15.21
+      },
+      {
+        "resonance": "5:2",
+        "aAU": 2.8246,
+        "binRawInGap": 334,
+        "binRawInner": 8623,
+        "binRawOuter": 2496,
+        "smoothedInGap": 1615.6,
+        "smoothedInner": 8600.4,
+        "smoothedOuter": 2532.4,
+        "depletionFactor": 3.45
+      },
+      {
+        "resonance": "7:3",
+        "aAU": 2.9575,
+        "binRawInGap": 1295,
+        "binRawInner": 3690,
+        "binRawOuter": 8571,
+        "smoothedInGap": 2465.2,
+        "smoothedInner": 3675.2,
+        "smoothedOuter": 8664.8,
+        "depletionFactor": 2.5
+      },
+      {
+        "resonance": "2:1",
+        "aAU": 3.2776,
+        "binRawInGap": 110,
+        "binRawInner": 9443,
+        "binRawOuter": 235,
+        "smoothedInGap": 117.4,
+        "smoothedInner": 9544.8,
+        "smoothedOuter": 223.4,
+        "depletionFactor": 41.6
+      }
+    ],
+    "blindMinima": [
+      {
+        "binIndex": 415,
+        "aAU": 2.0775,
+        "smoothedCount": 108.4,
+        "localBaseline": 1305.4,
+        "relativeDepth": 0.083
+      },
+      {
+        "binIndex": 499,
+        "aAU": 2.4975,
+        "smoothedCount": 550.4,
+        "localBaseline": 8202.6,
+        "relativeDepth": 0.0671
+      },
+      {
+        "binIndex": 565,
+        "aAU": 2.8275,
+        "smoothedCount": 1305.4,
+        "localBaseline": 8202.6,
+        "relativeDepth": 0.1591
+      },
+      {
+        "binIndex": 589,
+        "aAU": 2.9475,
+        "smoothedCount": 1915.4,
+        "localBaseline": 7027.2,
+        "relativeDepth": 0.2726
+      },
+      {
+        "binIndex": 658,
+        "aAU": 3.2925,
+        "smoothedCount": 95,
+        "localBaseline": 231,
+        "relativeDepth": 0.4113
+      }
+    ],
+    "worstBlindMatchAU": 0.0149,
+    "gap31Depletion": 15.21,
+    "tierBias": [
+      {
+        "tier": "full catalogue",
+        "inner": 956187,
+        "outer": 503910,
+        "outerFraction": 0.3451
+      },
+      {
+        "tier": "brightness cut, H < 15",
+        "inner": 30603,
+        "outer": 32167,
+        "outerFraction": 0.5125
+      },
+      {
+        "tier": "uniform random sample",
+        "inner": 51492,
+        "outer": 26798,
+        "outerFraction": 0.3423
+      }
+    ]
+  },
+  "totals": {
+    "parsedAsteroidRows": 1562537,
+    "renderableBodies": 1562531,
+    "excludedNonElliptical": 5,
+    "excludedIncompleteElements": 1,
+    "cometsCatalogued": 4075
+  }
+}

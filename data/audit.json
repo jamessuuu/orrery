@@ -1,0 +1,456 @@
+{
+  "generatedAt": "2026-09-07T04:09:13.383Z",
+  "generator": "scripts/audit.mjs",
+  "method": {
+    "histogramBinAU": 0.005,
+    "smoothingWindowBins": 5,
+    "smoothingWindowAU": 0.025,
+    "blindGapSearchRangeAU": [
+      2,
+      3.5
+    ],
+    "blindGapRule": "local minimum of the smoothed histogram within +/-0.04 AU whose value is below 50% of the median smoothed count over +/-0.30 AU",
+    "resonanceLocationsDerivedFrom": {
+      "jupiterSemiMajorAxisAU": 5.202887,
+      "formula": "a = a_J * (q/p)^(2/3)"
+    },
+    "sampleSeed": 20260907
+  },
+  "sources": {
+    "asteroids": {
+      "url": "https://ssd-api.jpl.nasa.gov/sbdb_query.api?fields=spkid,full_name,a,e,i,om,w,ma,epoch,H,class&sb-kind=a&full-prec=true",
+      "file": "data/sbdb-asteroids-fullprec.json",
+      "bytes": 275991442,
+      "sha256": "27d07090a60a650c0b3f588e43081ffc19b1f4e056e8617c095b84fd12d86d33",
+      "apiReportedCount": 1562537,
+      "parsedRows": 1562537,
+      "signature": {
+        "version": "1.0",
+        "source": "NASA/JPL SBDB (Small-Body DataBase) Query API"
+      },
+      "fields": [
+        "spkid",
+        "full_name",
+        "a",
+        "e",
+        "i",
+        "om",
+        "w",
+        "ma",
+        "epoch",
+        "H",
+        "class"
+      ]
+    },
+    "comets": {
+      "url": "https://ssd-api.jpl.nasa.gov/sbdb_query.api?fields=spkid,full_name,a,e,i,om,w,ma,epoch,H,class&sb-kind=c&full-prec=true",
+      "file": "data/sbdb-comets-fullprec.json",
+      "bytes": 586308,
+      "sha256": "65175e2c0a963a4b53a0bc0ae387e272b360b229562859ec13fff969056b7fc6",
+      "apiReportedCount": 4075,
+      "parsedRows": 4075
+    }
+  },
+  "counts": {
+    "asteroidsParsed": 1562537,
+    "cometsParsed": 4075,
+    "renderable": 1562531,
+    "excludedIncompleteElements": 1,
+    "excludedNonElliptical": 5,
+    "missingByField": {
+      "a": 0,
+      "e": 0,
+      "i": 0,
+      "om": 0,
+      "w": 0,
+      "ma": 1,
+      "epoch": 0
+    },
+    "missingAbsoluteMagnitude": 502
+  },
+  "epochs": {
+    "distinct": 6334,
+    "modeJD": 2461200.5,
+    "modeCount": 1467175,
+    "modeFraction": 0.93897,
+    "offEpochCount": 95362,
+    "minJD": 2425051.5,
+    "maxJD": 2461289.5,
+    "spanDays": 36238,
+    "decision": "Every body carries its own epoch. The propagator advances each body from its own epoch, so no body is drawn at a time it was not solved for."
+  },
+  "classes": [
+    {
+      "code": "MBA",
+      "count": 1382216
+    },
+    {
+      "code": "OMB",
+      "count": 50287
+    },
+    {
+      "code": "IMB",
+      "count": 32905
+    },
+    {
+      "code": "MCA",
+      "count": 29974
+    },
+    {
+      "code": "APO",
+      "count": 24042
+    },
+    {
+      "code": "TJN",
+      "count": 16389
+    },
+    {
+      "code": "AMO",
+      "count": 14749
+    },
+    {
+      "code": "TNO",
+      "count": 7285
+    },
+    {
+      "code": "ATE",
+      "count": 3445
+    },
+    {
+      "code": "CEN",
+      "count": 1047
+    },
+    {
+      "code": "AST",
+      "count": 155
+    },
+    {
+      "code": "IEO",
+      "count": 38
+    },
+    {
+      "code": "HYA",
+      "count": 5
+    }
+  ],
+  "cometClasses": [
+    {
+      "code": "PAR",
+      "count": 1763
+    },
+    {
+      "code": "JFc",
+      "count": 830
+    },
+    {
+      "code": "COM",
+      "count": 732
+    },
+    {
+      "code": "HYP",
+      "count": 520
+    },
+    {
+      "code": "HTC",
+      "count": 111
+    },
+    {
+      "code": "ETc",
+      "count": 80
+    },
+    {
+      "code": "CTc",
+      "count": 22
+    },
+    {
+      "code": "JFC",
+      "count": 17
+    }
+  ],
+  "shape": {
+    "semiMajorAxisAU": {
+      "n": 1562531,
+      "min": 0.461763,
+      "median": 2.6687,
+      "p90": 3.1562,
+      "p99": 5.2126,
+      "max": 14513.0071
+    },
+    "eccentricity": {
+      "n": 1562531,
+      "min": 0.000003,
+      "median": 0.1473,
+      "p90": 0.2617,
+      "p99": 0.5286,
+      "max": 0.9996
+    },
+    "inclinationDeg": {
+      "n": 1562531,
+      "min": 0.005995,
+      "median": 7.8761,
+      "p90": 17.6163,
+      "p99": 29.273,
+      "max": 175.9755
+    },
+    "absoluteMagnitudeH": {
+      "n": 1562029,
+      "min": -1.26,
+      "median": 17.65,
+      "p90": 19.41,
+      "p99": 24.98,
+      "max": 34.06
+    },
+    "inclinedOver30Deg": 13044,
+    "histogramOverflowAbove60AU": 1227
+  },
+  "kirkwood": {
+    "blindMinimaFound": [
+      {
+        "binIndex": 415,
+        "aAU": 2.0775,
+        "smoothedCount": 108.4,
+        "localBaseline": 1305.4,
+        "relativeDepth": 0.083
+      },
+      {
+        "binIndex": 499,
+        "aAU": 2.4975,
+        "smoothedCount": 550.4,
+        "localBaseline": 8202.6,
+        "relativeDepth": 0.0671
+      },
+      {
+        "binIndex": 565,
+        "aAU": 2.8275,
+        "smoothedCount": 1305.4,
+        "localBaseline": 8202.6,
+        "relativeDepth": 0.1591
+      },
+      {
+        "binIndex": 589,
+        "aAU": 2.9475,
+        "smoothedCount": 1915.4,
+        "localBaseline": 7027.2,
+        "relativeDepth": 0.2726
+      },
+      {
+        "binIndex": 658,
+        "aAU": 3.2925,
+        "smoothedCount": 95,
+        "localBaseline": 231,
+        "relativeDepth": 0.4113
+      }
+    ],
+    "blindMatchToPredictedResonance": [
+      {
+        "resonance": "3:1",
+        "predictedAU": 2.5013,
+        "nearestBlindMinimum": {
+          "binIndex": 499,
+          "aAU": 2.4975,
+          "smoothedCount": 550.4,
+          "localBaseline": 8202.6,
+          "relativeDepth": 0.0671,
+          "distanceAU": 0.0038
+        }
+      },
+      {
+        "resonance": "5:2",
+        "predictedAU": 2.8246,
+        "nearestBlindMinimum": {
+          "binIndex": 565,
+          "aAU": 2.8275,
+          "smoothedCount": 1305.4,
+          "localBaseline": 8202.6,
+          "relativeDepth": 0.1591,
+          "distanceAU": 0.0029
+        }
+      },
+      {
+        "resonance": "7:3",
+        "predictedAU": 2.9575,
+        "nearestBlindMinimum": {
+          "binIndex": 589,
+          "aAU": 2.9475,
+          "smoothedCount": 1915.4,
+          "localBaseline": 7027.2,
+          "relativeDepth": 0.2726,
+          "distanceAU": 0.01
+        }
+      },
+      {
+        "resonance": "2:1",
+        "predictedAU": 3.2776,
+        "nearestBlindMinimum": {
+          "binIndex": 658,
+          "aAU": 3.2925,
+          "smoothedCount": 95,
+          "localBaseline": 231,
+          "relativeDepth": 0.4113,
+          "distanceAU": 0.0149
+        }
+      }
+    ],
+    "gapTableFullCorpus": [
+      {
+        "resonance": "3:1",
+        "aAU": 2.5013,
+        "binRawInGap": 233,
+        "binRawInner": 7560,
+        "binRawOuter": 10783,
+        "smoothedInGap": 613.4,
+        "smoothedInner": 7676,
+        "smoothedOuter": 10982.2,
+        "depletionFactor": 15.21
+      },
+      {
+        "resonance": "5:2",
+        "aAU": 2.8246,
+        "binRawInGap": 334,
+        "binRawInner": 8623,
+        "binRawOuter": 2496,
+        "smoothedInGap": 1615.6,
+        "smoothedInner": 8600.4,
+        "smoothedOuter": 2532.4,
+        "depletionFactor": 3.45
+      },
+      {
+        "resonance": "7:3",
+        "aAU": 2.9575,
+        "binRawInGap": 1295,
+        "binRawInner": 3690,
+        "binRawOuter": 8571,
+        "smoothedInGap": 2465.2,
+        "smoothedInner": 3675.2,
+        "smoothedOuter": 8664.8,
+        "depletionFactor": 2.5
+      },
+      {
+        "resonance": "2:1",
+        "aAU": 3.2776,
+        "binRawInGap": 110,
+        "binRawInner": 9443,
+        "binRawOuter": 235,
+        "smoothedInGap": 117.4,
+        "smoothedInner": 9544.8,
+        "smoothedOuter": 223.4,
+        "depletionFactor": 41.6
+      }
+    ]
+  },
+  "tierSelectionBias": {
+    "note": "A brightness-limited (H<15) tier is radially biased: at fixed size an outer-belt body is fainter, so H-cuts thin the outer belt. Both candidate tiers are measured here and the unbiased one is what ships.",
+    "hLimit": 15,
+    "hLimitedCount": 83817,
+    "uniformSampleCount": 83817,
+    "beltRadialSplit": {
+      "fullCorpus": {
+        "inner": 956187,
+        "outer": 503910,
+        "outerFraction": 0.3451
+      },
+      "hLimited": {
+        "inner": 30603,
+        "outer": 32167,
+        "outerFraction": 0.5125
+      },
+      "uniformSample": {
+        "inner": 51492,
+        "outer": 26798,
+        "outerFraction": 0.3423
+      }
+    },
+    "gapTableHLimited": [
+      {
+        "resonance": "3:1",
+        "aAU": 2.5013,
+        "binRawInGap": 2,
+        "binRawInner": 222,
+        "binRawOuter": 387,
+        "smoothedInGap": 79.77,
+        "smoothedInner": 217.69,
+        "smoothedOuter": 395.54,
+        "depletionFactor": 3.84
+      },
+      {
+        "resonance": "5:2",
+        "aAU": 2.8246,
+        "binRawInGap": 0,
+        "binRawInner": 268,
+        "binRawOuter": 129,
+        "smoothedInGap": 147.31,
+        "smoothedInner": 290.31,
+        "smoothedOuter": 141.08,
+        "depletionFactor": 1.46
+      },
+      {
+        "resonance": "7:3",
+        "aAU": 2.9575,
+        "binRawInGap": 70,
+        "binRawInner": 167,
+        "binRawOuter": 498,
+        "smoothedInGap": 246.92,
+        "smoothedInner": 131.23,
+        "smoothedOuter": 453.62,
+        "depletionFactor": 1.18
+      },
+      {
+        "resonance": "2:1",
+        "aAU": 3.2776,
+        "binRawInGap": 4,
+        "binRawInner": 634,
+        "binRawOuter": 15,
+        "smoothedInGap": 25.54,
+        "smoothedInner": 612.77,
+        "smoothedOuter": 20.31,
+        "depletionFactor": 12.39
+      }
+    ],
+    "gapTableUniformSample": [
+      {
+        "resonance": "3:1",
+        "aAU": 2.5013,
+        "binRawInGap": 7,
+        "binRawInner": 385,
+        "binRawOuter": 591,
+        "smoothedInGap": 122,
+        "smoothedInner": 414.31,
+        "smoothedOuter": 599.31,
+        "depletionFactor": 4.15
+      },
+      {
+        "resonance": "5:2",
+        "aAU": 2.8246,
+        "binRawInGap": 15,
+        "binRawInner": 485,
+        "binRawOuter": 123,
+        "smoothedInGap": 168.46,
+        "smoothedInner": 477.77,
+        "smoothedOuter": 129.23,
+        "depletionFactor": 1.8
+      },
+      {
+        "resonance": "7:3",
+        "aAU": 2.9575,
+        "binRawInGap": 74,
+        "binRawInner": 196,
+        "binRawOuter": 456,
+        "smoothedInGap": 177.38,
+        "smoothedInner": 149.85,
+        "smoothedOuter": 441.23,
+        "depletionFactor": 1.67
+      },
+      {
+        "resonance": "2:1",
+        "aAU": 3.2776,
+        "binRawInGap": 8,
+        "binRawInner": 489,
+        "binRawOuter": 16,
+        "smoothedInGap": 15.15,
+        "smoothedInner": 464.31,
+        "smoothedOuter": 10.77,
+        "depletionFactor": 15.68
+      }
+    ]
+  }
+}
