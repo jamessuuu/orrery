@@ -1,0 +1,9 @@
+# Raw JPL responses (451 MB) are build inputs, never served, and blow the
+# 100 MB upload limit. dist/ is the served output and must NOT be excluded.
+node_modules/
+docs/
+.git/
+*.zip
+data/sbdb*
+data/*.txt
+data/*.html

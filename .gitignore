@@ -12,3 +12,5 @@ data/*.html
 
 # scratch renders from tuning passes
 docs/tmp-*.png
+
+.vercel
