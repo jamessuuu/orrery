@@ -2,10 +2,10 @@
   "files": {
     "js": [
       {
-        "rel": "assets/index-CvC6amFn.js",
-        "raw": 591902,
-        "gzip": 153354,
-        "brotli": 127053
+        "rel": "assets/index-dztIgOBS.js",
+        "raw": 598346,
+        "gzip": 155879,
+        "brotli": 128891
       }
     ],
     "css": [
@@ -21,7 +21,7 @@
         "rel": "index.html",
         "raw": 123266,
         "gzip": 24203,
-        "brotli": 18048
+        "brotli": 18060
       }
     ],
     "data": [
@@ -72,9 +72,9 @@
     ]
   },
   "js": {
-    "raw": 591902,
-    "gzip": 153354,
-    "brotli": 127053
+    "raw": 598346,
+    "gzip": 155879,
+    "brotli": 128891
   },
   "css": {
     "raw": 11786,
@@ -84,12 +84,12 @@
   "html": {
     "raw": 123266,
     "gzip": 24203,
-    "brotli": 18048
+    "brotli": 18060
   },
   "codeShell": {
-    "raw": 726954,
-    "gzip": 180838,
-    "brotli": 147948
+    "raw": 733398,
+    "gzip": 183363,
+    "brotli": 149798
   },
   "preview": {
     "rel": "data/orrery-preview.bin",
@@ -116,8 +116,8 @@
     "brotli": 1018
   },
   "firstPaint": {
-    "raw": 2417098,
-    "gzip": 1453943,
-    "brotli": 1374819
+    "raw": 2423542,
+    "gzip": 1456468,
+    "brotli": 1376669
   }
 }

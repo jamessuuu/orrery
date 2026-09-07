@@ -1,0 +1,473 @@
+{
+  "measuredAt": "2026-09-07T06:56:37.765Z",
+  "base": "http://localhost:4283",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "cases": [
+    {
+      "id": "00-before",
+      "query": "tone=exp&encode=0",
+      "note": "The pipeline as shipped before 2026-09-07: exponential curve, no sRGB transfer function, no density gamma.",
+      "url": "http://localhost:4283/?tone=exp&encode=0",
+      "gpuCost": {
+        "samples": 121,
+        "medianMs": 1.4858,
+        "p95Ms": 1.5321,
+        "minMs": 1.4608,
+        "maxMs": 1.5664,
+        "impliedFps": 673,
+        "method": "EXT_disjoint_timer_query_webgl2 (TIME_ELAPSED on the render pass)",
+        "drawnBodies": 1562531
+      },
+      "stats": {
+        "meanLuma": 21.142,
+        "p001": 1,
+        "p01": 1,
+        "p50": 1,
+        "p99": 161,
+        "p999": 173,
+        "max": 251,
+        "blackPointOk": true,
+        "clippedWhiteFraction": 0,
+        "distinctLumaValues": 220
+      },
+      "radial": {
+        "pxPerAu": 101.07,
+        "minima": [
+          {
+            "aAU": 2.063,
+            "luma": 7.51,
+            "localPeak": 153.16,
+            "contrast": 0.049
+          },
+          {
+            "aAU": 2.508,
+            "luma": 118.34,
+            "localPeak": 162.8,
+            "contrast": 0.727
+          },
+          {
+            "aAU": 2.934,
+            "luma": 93.28,
+            "localPeak": 154.23,
+            "contrast": 0.605
+          }
+        ],
+        "depth": {
+          "4:1": 0.1224,
+          "3:1": 0.7474,
+          "5:2": 1.0019,
+          "7:3": 0.8398,
+          "2:1": 1.3211
+        }
+      },
+      "errors": [],
+      "shot": "docs/ablation/00-before.png"
+    },
+    {
+      "id": "01-encode-only",
+      "query": "tone=exp&encode=1",
+      "note": "The sRGB transfer function restored, legacy curve. Isolates the colour-space defect.",
+      "url": "http://localhost:4283/?tone=exp&encode=1",
+      "gpuCost": {
+        "samples": 121,
+        "medianMs": 1.4889,
+        "p95Ms": 1.5056,
+        "minMs": 1.4714,
+        "maxMs": 1.5156,
+        "impliedFps": 671.6,
+        "method": "EXT_disjoint_timer_query_webgl2 (TIME_ELAPSED on the render pass)",
+        "drawnBodies": 1562531
+      },
+      "stats": {
+        "meanLuma": 40.375,
+        "p001": 7,
+        "p01": 7,
+        "p50": 7,
+        "p99": 207,
+        "p999": 215,
+        "max": 253,
+        "blackPointOk": false,
+        "clippedWhiteFraction": 0,
+        "distinctLumaValues": 239
+      },
+      "radial": {
+        "pxPerAu": 101.07,
+        "minima": [
+          {
+            "aAU": 2.063,
+            "luma": 46.6,
+            "localPeak": 203.07,
+            "contrast": 0.229
+          },
+          {
+            "aAU": 2.934,
+            "luma": 162.21,
+            "localPeak": 203.76,
+            "contrast": 0.796
+          }
+        ],
+        "depth": {
+          "4:1": 0.3565,
+          "3:1": 0.8769,
+          "5:2": 1.0085,
+          "7:3": 0.9239,
+          "2:1": 1.2664
+        }
+      },
+      "errors": [],
+      "shot": "docs/ablation/01-encode-only.png"
+    },
+    {
+      "id": "02-shipped",
+      "query": "",
+      "note": "Shipped: Khronos PBR Neutral, exposure 0.62, density gamma 1.8, sRGB transfer function.",
+      "url": "http://localhost:4283/?",
+      "gpuCost": {
+        "samples": 121,
+        "medianMs": 1.4953,
+        "p95Ms": 1.5152,
+        "minMs": 1.4772,
+        "maxMs": 1.5556,
+        "impliedFps": 668.8,
+        "method": "EXT_disjoint_timer_query_webgl2 (TIME_ELAPSED on the render pass)",
+        "drawnBodies": 1562531
+      },
+      "stats": {
+        "meanLuma": 17.577,
+        "p001": 0,
+        "p01": 0,
+        "p50": 0,
+        "p99": 152,
+        "p999": 157,
+        "max": 230,
+        "blackPointOk": true,
+        "clippedWhiteFraction": 0,
+        "distinctLumaValues": 218
+      },
+      "radial": {
+        "pxPerAu": 101.07,
+        "minima": [
+          {
+            "aAU": 2.053,
+            "luma": 0.28,
+            "localPeak": 143.37,
+            "contrast": 0.002
+          },
+          {
+            "aAU": 2.508,
+            "luma": 108.52,
+            "localPeak": 152.53,
+            "contrast": 0.711
+          },
+          {
+            "aAU": 2.934,
+            "luma": 79.3,
+            "localPeak": 147.68,
+            "contrast": 0.537
+          }
+        ],
+        "depth": {
+          "4:1": 0.0086,
+          "3:1": 0.7229,
+          "5:2": 1.0115,
+          "7:3": 0.7928,
+          "2:1": 1.3173
+        }
+      },
+      "errors": [],
+      "shot": "docs/ablation/02-shipped.png"
+    },
+    {
+      "id": "03-agx",
+      "query": "tone=agx",
+      "note": "AgX instead of Neutral, same exposure and gamma.",
+      "url": "http://localhost:4283/?tone=agx",
+      "gpuCost": {
+        "samples": 121,
+        "medianMs": 1.5057,
+        "p95Ms": 1.5414,
+        "minMs": 1.4844,
+        "maxMs": 1.581,
+        "impliedFps": 664.2,
+        "method": "EXT_disjoint_timer_query_webgl2 (TIME_ELAPSED on the render pass)",
+        "drawnBodies": 1562531
+      },
+      "stats": {
+        "meanLuma": 19.713,
+        "p001": 0,
+        "p01": 0,
+        "p50": 0,
+        "p99": 143,
+        "p999": 151,
+        "max": 213,
+        "blackPointOk": true,
+        "clippedWhiteFraction": 0,
+        "distinctLumaValues": 187
+      },
+      "radial": {
+        "pxPerAu": 101.07,
+        "minima": [
+          {
+            "aAU": 2.063,
+            "luma": 2.81,
+            "localPeak": 138.11,
+            "contrast": 0.02
+          },
+          {
+            "aAU": 2.934,
+            "luma": 97.05,
+            "localPeak": 138.78,
+            "contrast": 0.699
+          }
+        ],
+        "depth": {
+          "4:1": 0.0425,
+          "3:1": 0.8162,
+          "5:2": 1.0105,
+          "7:3": 0.881,
+          "2:1": 1.4408
+        }
+      },
+      "errors": [],
+      "shot": "docs/ablation/03-agx.png"
+    },
+    {
+      "id": "04-no-gamma",
+      "query": "gamma=1.0",
+      "note": "Shipped, but with the density gamma removed. Shows what the display transfer function costs the gaps on its own.",
+      "url": "http://localhost:4283/?gamma=1.0",
+      "gpuCost": {
+        "samples": 121,
+        "medianMs": 1.4979,
+        "p95Ms": 1.5212,
+        "minMs": 1.4822,
+        "maxMs": 1.6429,
+        "impliedFps": 667.6,
+        "method": "EXT_disjoint_timer_query_webgl2 (TIME_ELAPSED on the render pass)",
+        "drawnBodies": 1562531
+      },
+      "stats": {
+        "meanLuma": 29.132,
+        "p001": 0,
+        "p01": 1,
+        "p50": 1,
+        "p99": 191,
+        "p999": 194,
+        "max": 240,
+        "blackPointOk": true,
+        "clippedWhiteFraction": 0,
+        "distinctLumaValues": 238
+      },
+      "radial": {
+        "pxPerAu": 101.07,
+        "minima": [
+          {
+            "aAU": 2.053,
+            "luma": 15.21,
+            "localPeak": 185.04,
+            "contrast": 0.082
+          },
+          {
+            "aAU": 2.934,
+            "luma": 134.63,
+            "localPeak": 188.11,
+            "contrast": 0.716
+          }
+        ],
+        "depth": {
+          "4:1": 0.1657,
+          "3:1": 0.8381,
+          "5:2": 1.0153,
+          "7:3": 0.8853,
+          "2:1": 1.3148
+        }
+      },
+      "errors": [],
+      "shot": "docs/ablation/04-no-gamma.png"
+    },
+    {
+      "id": "05-no-curve",
+      "query": "tone=none",
+      "note": "No tone curve at all, clamp only.",
+      "url": "http://localhost:4283/?tone=none",
+      "gpuCost": {
+        "samples": 121,
+        "medianMs": 1.5008,
+        "p95Ms": 1.5416,
+        "minMs": 1.4853,
+        "maxMs": 1.5731,
+        "impliedFps": 666.3,
+        "method": "EXT_disjoint_timer_query_webgl2 (TIME_ELAPSED on the render pass)",
+        "drawnBodies": 1562531
+      },
+      "stats": {
+        "meanLuma": 44.655,
+        "p001": 7,
+        "p01": 7,
+        "p50": 7,
+        "p99": 249,
+        "p999": 252,
+        "max": 255,
+        "blackPointOk": false,
+        "clippedWhiteFraction": 0.000254,
+        "distinctLumaValues": 249
+      },
+      "radial": {
+        "pxPerAu": 101.07,
+        "minima": [
+          {
+            "aAU": 2.063,
+            "luma": 47.01,
+            "localPeak": 240.93,
+            "contrast": 0.195
+          },
+          {
+            "aAU": 2.934,
+            "luma": 179.59,
+            "localPeak": 242.9,
+            "contrast": 0.739
+          }
+        ],
+        "depth": {
+          "4:1": 0.3349,
+          "3:1": 0.84,
+          "5:2": 1.0054,
+          "7:3": 0.9026,
+          "2:1": 1.2611
+        }
+      },
+      "errors": [],
+      "shot": "docs/ablation/05-no-curve.png"
+    },
+    {
+      "id": "06-over",
+      "query": "exposure=1.2",
+      "note": "Deliberately over-exposed, the failure mode the hyperreal-lab report warns about.",
+      "url": "http://localhost:4283/?exposure=1.2",
+      "gpuCost": {
+        "samples": 121,
+        "medianMs": 1.4986,
+        "p95Ms": 1.5204,
+        "minMs": 1.4788,
+        "maxMs": 1.5811,
+        "impliedFps": 667.3,
+        "method": "EXT_disjoint_timer_query_webgl2 (TIME_ELAPSED on the render pass)",
+        "drawnBodies": 1562531
+      },
+      "stats": {
+        "meanLuma": 26.374,
+        "p001": 0,
+        "p01": 0,
+        "p50": 0,
+        "p99": 176,
+        "p999": 178,
+        "max": 243,
+        "blackPointOk": true,
+        "clippedWhiteFraction": 0,
+        "distinctLumaValues": 244
+      },
+      "radial": {
+        "pxPerAu": 101.07,
+        "minima": [
+          {
+            "aAU": 2.053,
+            "luma": 1.82,
+            "localPeak": 171.61,
+            "contrast": 0.011
+          }
+        ],
+        "depth": {
+          "4:1": 0.0226,
+          "3:1": 0.9129,
+          "5:2": 1.0213,
+          "7:3": 0.9213,
+          "2:1": 1.4154
+        }
+      },
+      "errors": [],
+      "shot": "docs/ablation/06-over.png"
+    }
+  ],
+  "gpu": {
+    "renderer": "ANGLE (AMD, AMD Radeon RX 9060 XT (0x00007590) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "drawingBuffer": [
+      1440,
+      900
+    ],
+    "devicePixelRatio": 1.0000000149011612
+  },
+  "rejected": {
+    "note": "Techniques that were built, measured on this scene, and then removed from the shipped bundle. Measured on probe builds on 2026-09-07 at 1440x900, DPR 1, on the GPU named above.",
+    "thresholdedBloom": {
+      "what": "A 24-tap golden-angle gathered bloom in the composite pass, luminanceThreshold 1.0 so only the Sun and the planet marks — the only things in the frame above diffuse white — could bloom at all. This is the correct, selective configuration, not the unthresholded one the hyperreal-lab report identifies as the AI-slop mechanism.",
+      "measured": [
+        {
+          "strength": 0,
+          "gapDepth": {
+            "4:1": 0.0088,
+            "3:1": 0.723,
+            "7:3": 0.7932
+          },
+          "blindMinima": [
+            "2.508",
+            "2.934"
+          ],
+          "gpuMs": 1.6088
+        },
+        {
+          "strength": 0.35,
+          "gapDepth": {
+            "4:1": 0.0113,
+            "3:1": 0.7807,
+            "7:3": 0.7823
+          },
+          "blindMinima": [
+            "2.508",
+            "2.944"
+          ],
+          "gpuMs": 1.6036
+        },
+        {
+          "strength": 0.9,
+          "gapDepth": {
+            "4:1": 0.0159,
+            "3:1": 0.8573,
+            "7:3": 0.7692
+          },
+          "blindMinima": [
+            "2.953"
+          ],
+          "gpuMs": 1.6081
+        }
+      ],
+      "verdict": "REJECTED. At strength 0.9 the rendered contrast of the 3:1 lane degrades from 0.723 to 0.857 and the blind pixel detector stops finding it. Brightness in this frame is a density measurement, so any operator that spreads light spatially erases the lanes the page exists to show. Merely having the 24-tap loop compiled into the composite shader, with the strength uniform at zero, cost 0.108 ms of the frame."
+    },
+    "depthCue": {
+      "what": "Any distance-attenuated depth cue, and depth of field.",
+      "verdict": "REJECTED on the same evidence, without a separate build. Every available depth cue works by modulating brightness or by spreading it spatially, and brightness is the measurement. The page already has two honest depth cues that touch neither: orbital parallax, and the user-controlled vertical exaggeration slider."
+    },
+    "lightRigAndIbl": {
+      "what": "The full Tier 1 lighting stack: a DirectionalLight with a 2048x2048 PCFSoftShadowMap and a tight frustum, an AmbientLight fill, and scene.environment from the 1k Poly Haven studio_small_09 HDRI (CC0) through PMREMGenerator + RGBELoader.",
+      "measured": {
+        "bundleGzipBefore": 155879,
+        "bundleGzipWithLightRig": 162227,
+        "marginalGzipCost": 6348,
+        "hdriDownloadBytes": 1615248,
+        "meanFrameLuminance": {
+          "off": 17.576,
+          "lightsOnly": 17.576,
+          "lightsPlusIbl": 17.575
+        },
+        "gapDepth3to1": {
+          "off": 0.7229,
+          "lightsOnly": 0.7229,
+          "lightsPlusIbl": 0.7231
+        }
+      },
+      "verdict": "REJECTED. It changes nothing, because there is nothing in this scene three.js can light: every object is a RawShaderMaterial Points or LineLoop, or a Sprite, and three’s lighting model and scene.environment reach only its own built-in lit materials. Shadows additionally need a receiver, and a solar-system plan view has no surface. 6,348 B gzip plus a 1.6 MB download for a mean frame luminance change of 0.001, which is inside the noise of the measurement itself."
+    }
+  }
+}

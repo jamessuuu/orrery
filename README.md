@@ -110,11 +110,11 @@ Measured on this machine, in Chromium, at 1600 × 1000 CSS px, devicePixelRatio 
 
 | View | Bodies drawn | GPU time / frame | Presented frame interval |
 |---|---|---|---|
-| Preview tier | 120,000 | **0.43 ms** | 5.00 ms (200 fps, vsync ceiling) |
+| Preview tier | 120,000 | **0.50 ms** | 5.00 ms (200 fps, vsync ceiling) |
 | Full catalogue, default view | **1,562,531** | **5.00 ms** | 5.00 ms (200 fps) |
-| Full catalogue, plan view (circularised) | 1,562,531 | 3.17 ms | 5.00 ms (200 fps) |
-| Full catalogue, vertical exaggeration ×14 | 1,562,531 | 3.01 ms | 5.00 ms (200 fps) |
-| Full catalogue, class-filtered views | 1,562,531 | 0.96 – 1.02 ms | 5.00 ms (200 fps) |
+| Full catalogue, plan view (circularised) | 1,562,531 | 3.35 ms | 5.00 ms (200 fps) |
+| Full catalogue, vertical exaggeration ×14 | 1,562,531 | 3.09 ms | 5.00 ms (200 fps) |
+| Full catalogue, class-filtered views | 1,562,531 | 1.06 – 1.11 ms | 5.00 ms (200 fps) |
 
 An earlier framing that put the belt across the full viewport at a closer camera measured
 **11.18 ms** (100 fps presented) — the cost is fill rate, not the Kepler solve, since every one of
@@ -132,24 +132,93 @@ reported 10,000 fps for a scene that was drawing nothing at all.
 
 ---
 
+## The colour pipeline, and what it cost
+
+The belt is drawn additively into a half-float buffer and resolved in a second pass. That
+second pass is a `RawShaderMaterial`, which means three.js injects nothing into it: if that
+one shader does not tone-map and does not apply the display transfer function, nobody does.
+Until 2026-09-07 it did neither. It wrote linear radiance straight into a framebuffer the
+browser reads as sRGB.
+
+Fixing that in isolation made the page **worse**, and the harness caught it. With the sRGB
+transfer function restored and nothing else changed, the rendered contrast of the 4:1 lane
+went from 0.122 to 0.357 and the blind detector in `scripts/shoot.mjs` stopped finding the
+3:1 gap at all. The reason is structural: this buffer does not hold radiance, it holds
+accumulated per-body alpha — a density map — and a transfer function designed for
+photographs lifts exactly the low-density wings that the Kirkwood gaps are made of.
+
+So the contrast the encode removes is put back deliberately, as a named density gamma, and
+then chosen by measurement rather than by eye. `npm run build && node
+scripts/render-ablation.mjs` writes `docs/render-ablation.json`; 1440x900, DPR 1, GPU time
+from `EXT_disjoint_timer_query_webgl2`, and the run refuses to report at all if the browser
+fell back to a software rasteriser.
+
+Gap depth is the mean rendered luminance in the lane divided by the mean 0.12 AU either
+side, straight off the framebuffer. **Lower is a deeper, more legible gap.**
+
+| Configuration | 4:1 (2.06 AU) | 3:1 (2.50 AU) | 7:3 (2.96 AU) | Lanes the blind detector finds | GPU ms |
+|---|---:|---:|---:|---:|---:|
+| Before this change | 0.1224 | 0.7474 | 0.8398 | 3 | 1.486 |
+| sRGB transfer function only | 0.3565 | 0.8769 | 0.9239 | 2 | 1.489 |
+| **Shipped: Neutral, exposure 0.62, gamma 1.8** | **0.0086** | **0.7229** | **0.7928** | **3** | **1.495** |
+| AgX instead of Neutral | 0.0425 | 0.8162 | 0.8810 | 2 | 1.506 |
+| Shipped, density gamma removed | 0.1657 | 0.8381 | 0.8853 | 2 | 1.498 |
+| No tone curve at all | 0.3349 | 0.8400 | 0.9026 | 2 | 1.501 |
+| Exposure 1.2 instead of 0.62 | 0.0226 | 0.9129 | 0.9213 | **1** | 1.499 |
+
+Every visible lane is deeper than it was, the frame has a true black point (0.1st percentile
+luminance 0, previously 1), and the whole thing costs **0.0095 ms of GPU time and 2,525 B
+gzip**. Khronos PBR Neutral beats AgX on every lane, which is what you would expect on a
+page where colour is the data channel rather than a look.
+
+The last row is the failure this report exists to prevent. One exposure stop too hot and two
+of the three lanes stop being detectable in the pixels, with nothing else changed and no
+error anywhere.
+
+### What was built, measured, and thrown away
+
+- **Thresholded bloom on the brightest bodies.** Implemented properly — `luminanceThreshold`
+  1.0, so only the Sun and the planet marks, the only things in the frame above diffuse
+  white, could bloom at all. At strength 0.9 the 3:1 lane went from 0.723 to 0.857 and the
+  blind detector lost it. Brightness here **is** the density measurement, so an operator
+  that spreads light spatially erases the subject. Merely leaving the 24-tap loop compiled
+  into the composite with its strength at zero cost 0.108 ms.
+- **A depth cue.** Rejected on the same evidence without a second build: every candidate
+  works by modulating brightness or spreading it, and brightness is the measurement. The page
+  already has two depth cues that touch neither — orbital parallax, and the vertical
+  exaggeration slider.
+- **A key light with a shadow map, an ambient fill, and IBL from a 1k CC0 HDRI.** Built and
+  run. It changed the mean frame luminance from 17.576 to 17.575, which is inside the noise
+  of the measurement. Nothing here is a material three.js can light: every object is a
+  `RawShaderMaterial` `Points` or `LineLoop`, or a `Sprite`. Cost had it shipped: **6,348 B
+  gzip and a 1.6 MB HDRI download for zero pixels.**
+
+The Sun and the planet marks are now written above 1.0 in the HDR buffer (×7.0 and ×1.7) so
+the tone curve has a highlight to roll off instead of a flat disc to clip.
+
+---
+
 ## Measured bundle size
 
 `npm run build && node scripts/measure-bundle.mjs`, written to `docs/bundle-measurement.json`.
 
 | | Raw | Gzip | Brotli |
 |---|---|---|---|
-| JavaScript | 591,902 B | **153,354 B** | 127,053 B |
+| JavaScript | 598,346 B | **155,879 B** | 128,891 B |
 | CSS | 11,786 B | 3,281 B | 2,847 B |
-| HTML (including the whole static fallback) | 123,266 B | 24,203 B | 18,048 B |
-| **Code shell total** | **726,954 B** | **180,838 B** | 147,948 B |
+| HTML (including the whole static fallback) | 123,266 B | 24,203 B | 18,060 B |
+| **Code shell total** | **733,398 B** | **183,363 B** | 149,798 B |
 | Preview tier (120,000 bodies) | 1,680,000 B | 1,269,911 B | 1,224,122 B |
-| **First paint total** | **2,417,098 B** | **1,453,943 B** | 1,374,819 B |
+| **First paint total** | **2,423,542 B** | **1,456,468 B** | 1,376,669 B |
 | Full catalogue, on explicit request | 21,875,434 B | 16,341,027 B | 15,777,145 B |
 
 For comparison, the reference this was benchmarked against (`human-atlas-seven.vercel.app`) ships
-**916,370 B raw / 260,791 B gzip**. This ships **726,954 B raw / 180,838 B gzip** of code — 21 %
-smaller raw, 31 % smaller gzipped — and that figure carries a 120 KB build-time static fallback
+**916,370 B raw / 260,791 B gzip**. This ships **733,398 B raw / 183,363 B gzip** of code — 20 %
+smaller raw, 30 % smaller gzipped — and that figure carries a 120 KB build-time static fallback
 the reference does not have.
+
+The colour pipeline described below costs **+2,525 B gzip** of that total (153,354 B to
+155,879 B). Everything it buys is in `docs/render-ablation.json`.
 
 ---
 

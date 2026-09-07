@@ -33,6 +33,7 @@ import {
   Sphere,
   GLSL3,
   MathUtils,
+  SRGBColorSpace,
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import {
@@ -67,8 +68,28 @@ function summarise(ms, method, drawnBodies) {
 
 const MAX_CLASSES = 16;
 
+// Scene-referred gains for the two things in this frame that are genuinely
+// brighter than diffuse white: the Sun, and the planet marks. Measured, not
+// guessed — see docs/render-ablation.json.
+const SUN_HDR_GAIN = 7.0;
+const MARK_HDR_GAIN = 1.7;
+
+/** Tone curve ids, mirrored in COMPOSITE_FRAGMENT's uTone branch. */
+export const TONE_ID = { exp: 0, agx: 1, neutral: 2, none: 3 };
+
 export class Orrery {
-  constructor(canvas) {
+  constructor(canvas, opts = {}) {
+    // Render pipeline options. Defaults are the shipped configuration; the
+    // ablation harness overrides them from the URL so every claim about them is
+    // a measurement of this exact code rather than a second implementation.
+    this.tone = opts.tone ?? 'neutral';
+    this.encodeSRGB = opts.encode !== false;
+    this.blackPoint = opts.black ?? 0;
+    // Density contrast. 1.8 measured, not chosen: at 1.8 the rendered 4:1, 3:1
+    // and 7:3 lanes are all DEEPER than the pipeline this replaced, while the
+    // frame keeps a true black point. See docs/render-ablation.json.
+    this.gamma = opts.gamma ?? 1.8;
+    this.exposureOverride = opts.exposure ?? null;
     this.canvas = canvas;
     this.renderer = new WebGLRenderer({
       canvas,
@@ -155,6 +176,10 @@ export class Orrery {
         uBackground: { value: new Vector3(0, 0, 0) },
         uExposure: { value: 1 },
         uDarkOnLight: { value: 0 },
+        uTone: { value: TONE_ID[this.tone] ?? TONE_ID.neutral },
+        uBlack: { value: 0 },
+        uEncode: { value: this.encodeSRGB ? 1 : 0 },
+        uGamma: { value: this.gamma },
       },
     });
     this.compositeScene = new Scene();
@@ -197,8 +222,21 @@ export class Orrery {
       const c = new Color(s.clear);
       this.compositeMaterial.uniforms.uBackground.value.set(c.r, c.g, c.b);
       this.compositeMaterial.uniforms.uDarkOnLight.value = s.additive ? 0 : 1;
-      this.compositeMaterial.uniforms.uExposure.value = s.additive ? 1.0 : 1.35;
+      // Exposure is a per-stage, per-curve decision, not a constant. The legacy
+      // exponential curve was tuned against a pass that skipped the sRGB encode,
+      // so it needs its old numbers; AgX and Neutral are tuned against the
+      // corrected pass and sit lower because the encode lifts the mid-tones.
+      const legacy = this.tone === 'exp' || this.tone === 'none';
+      const exposure = this.exposureOverride ?? (legacy
+        ? (s.additive ? 1.0 : 1.35)
+        : (s.additive ? s.exposure : s.exposureDark));
+      this.compositeMaterial.uniforms.uExposure.value = exposure;
+      this.compositeMaterial.uniforms.uBlack.value = legacy ? 0 : this.blackPoint;
+      this.compositeMaterial.uniforms.uTone.value = TONE_ID[this.tone] ?? TONE_ID.neutral;
+      this.compositeMaterial.uniforms.uEncode.value = this.encodeSRGB ? 1 : 0;
+      this.compositeMaterial.uniforms.uGamma.value = legacy ? 1.0 : this.gamma;
     }
+    if (this.sun) this.sun.intensity = s.additive ? 1 : 0.85;
     if (this.material) {
       this.material.blending = s.additive ? AdditiveBlending : NormalBlending;
       this.material.uniforms.uDarkOnLight.value = s.additive ? 0 : 1;
@@ -210,7 +248,7 @@ export class Orrery {
       l.material.uniforms.uColor.value.set(...s.orbit);
       l.material.uniforms.uOpacity.value = s.orbitOpacity;
     }
-    if (this.sunSprite) this.sunSprite.material.color.setRGB(...s.sun);
+    if (this.sunSprite) this.sunSprite.material.color.setRGB(...s.sun).multiplyScalar(SUN_HDR_GAIN);
   }
 
   /**
@@ -400,7 +438,7 @@ export class Orrery {
       this.planetMarks.push(mark);
     }
     this.sunSprite = this.makeMark('Sun', 26);
-    this.sunSprite.material.color.setRGB(...s.sun);
+    this.sunSprite.material.color.setRGB(...s.sun).multiplyScalar(SUN_HDR_GAIN);
     this.scene.add(this.sunSprite);
     this.refEpochJD = refEpochJD;
   }
@@ -416,7 +454,16 @@ export class Orrery {
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, 64, 64);
     const tex = new CanvasTexture(c);
+    // A colour map, so it is sRGB-encoded data and must say so. (The ramp here is
+    // neutral white, so this particular texture decodes to the same numbers — it
+    // is declared anyway because the next colour texture added to this file will
+    // not be neutral, and an undeclared colour map is invisible until it isn't.)
+    tex.colorSpace = SRGBColorSpace;
     const mat = new SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false });
+    // Above 1.0 on purpose. The composite tone curve can only roll a highlight
+    // off if the highlight is actually brighter than white in the HDR buffer;
+    // a mark pinned at 1.0 has nothing to roll off and clips to a flat disc.
+    mat.color.multiplyScalar(MARK_HDR_GAIN);
     const sp = new Sprite(mat);
     sp.scale.setScalar(size * 0.06);
     sp.userData.label = label;

@@ -314,6 +314,112 @@ void main() {
 }
 `;
 
+// Tone curves and the display transfer function.
+//
+// AgXToneMapping and NeutralToneMapping are transcribed from three r185's own
+// ShaderChunk/tonemapping_pars_fragment.glsl.js so that "AgX" here means exactly
+// what renderer.toneMapping = AgXToneMapping means everywhere else. The composite
+// pass is a RawShaderMaterial, so three injects nothing into it: if this file does
+// not do the tone map and the sRGB encode, nobody does.
+//
+// sRGBTransferOETF is likewise three's own colorspace_pars_fragment. Its absence
+// was a real defect: the pass was writing LINEAR radiance into a framebuffer the
+// browser reads as sRGB, so every mid-tone was displayed about a stop and a half
+// too dark and the belt's low-density wings — which is where the Kirkwood gaps
+// live — were crushed toward black.
+export const TONEMAP_GLSL = /* glsl */ `
+const mat3 LINEAR_REC2020_TO_LINEAR_SRGB = mat3(
+  vec3( 1.6605, - 0.1246, - 0.0182 ),
+  vec3( - 0.5876, 1.1329, - 0.1006 ),
+  vec3( - 0.0728, - 0.0083, 1.1187 )
+);
+const mat3 LINEAR_SRGB_TO_LINEAR_REC2020 = mat3(
+  vec3( 0.6274, 0.0691, 0.0164 ),
+  vec3( 0.3293, 0.9195, 0.0880 ),
+  vec3( 0.0433, 0.0113, 0.8956 )
+);
+
+vec3 agxDefaultContrastApprox(vec3 x) {
+  vec3 x2 = x * x;
+  vec3 x4 = x2 * x2;
+  return + 15.5 * x4 * x2
+    - 40.14 * x4 * x
+    + 31.96 * x4
+    - 6.868 * x2 * x
+    + 0.4298 * x2
+    + 0.1191 * x
+    - 0.00232;
+}
+
+vec3 agxToneMap(vec3 color, float exposure) {
+  const mat3 AgXInsetMatrix = mat3(
+    vec3( 0.856627153315983, 0.137318972929847, 0.11189821299995 ),
+    vec3( 0.0951212405381588, 0.761241990602591, 0.0767994186031903 ),
+    vec3( 0.0482516061458583, 0.101439036467562, 0.811302368396859 )
+  );
+  const mat3 AgXOutsetMatrix = mat3(
+    vec3( 1.1271005818144368, - 0.1413297634984383, - 0.14132976349843826 ),
+    vec3( - 0.11060664309660323, 1.157823702216272, - 0.11060664309660294 ),
+    vec3( - 0.016493938717834573, - 0.016493938717834257, 1.2519364065950405 )
+  );
+  const float AgxMinEv = - 12.47393;
+  const float AgxMaxEv = 4.026069;
+
+  color *= exposure;
+  color = LINEAR_SRGB_TO_LINEAR_REC2020 * color;
+  color = AgXInsetMatrix * color;
+  color = max(color, 1e-10);
+  color = log2(color);
+  color = (color - AgxMinEv) / (AgxMaxEv - AgxMinEv);
+  color = clamp(color, 0.0, 1.0);
+  color = agxDefaultContrastApprox(color);
+  color = AgXOutsetMatrix * color;
+  color = pow(max(vec3(0.0), color), vec3(2.2));
+  color = LINEAR_REC2020_TO_LINEAR_SRGB * color;
+  return clamp(color, 0.0, 1.0);
+}
+
+vec3 neutralToneMap(vec3 color, float exposure) {
+  const float StartCompression = 0.8 - 0.04;
+  const float Desaturation = 0.15;
+  color *= exposure;
+  float x = min(color.r, min(color.g, color.b));
+  float offset = x < 0.08 ? x - 6.25 * x * x : 0.04;
+  color -= offset;
+  float peak = max(color.r, max(color.g, color.b));
+  if (peak < StartCompression) return max(color, vec3(0.0));
+  float d = 1.0 - StartCompression;
+  float newPeak = 1.0 - d * d / (peak + d - StartCompression);
+  color *= newPeak / peak;
+  float g = 1.0 - 1.0 / (Desaturation * (peak - newPeak) + 1.0);
+  return clamp(mix(color, vec3(newPeak), g), 0.0, 1.0);
+}
+
+// The pre-r185 curve this project shipped, kept so the change is switchable and
+// therefore measurable rather than merely asserted.
+vec3 exponentialToneMap(vec3 color, float exposure) {
+  return vec3(1.0) - exp(-color * exposure);
+}
+
+vec3 sRGBTransferOETF(vec3 value) {
+  return mix(
+    pow(value, vec3(0.41666)) * 1.055 - vec3(0.055),
+    value * 12.92,
+    vec3(lessThanEqual(value, vec3(0.0031308)))
+  );
+}
+`;
+
+// Bloom is deliberately absent, and that is a measured decision rather than an
+// omission. A thresholded bloom (threshold 1.0, so only the Sun and the planet
+// marks are above it) was implemented and ablated: at strength 0.9 the rendered
+// contrast of the 3:1 Kirkwood lane fell from 0.723 to 0.857 and the blind pixel
+// detector in scripts/shoot.mjs stopped finding it at all. The mechanism is that
+// this frame's brightness IS a density measurement, so any operator that spreads
+// light spatially erases the very lanes the page exists to show. Same argument
+// disqualifies depth of field and every distance-attenuated depth cue.
+// Numbers: docs/render-ablation.json, cases b-off / b-035 / b-090.
+
 export const COMPOSITE_FRAGMENT = /* glsl */ `
 precision highp float;
 in vec2 vUv;
@@ -321,26 +427,68 @@ uniform sampler2D uScene;
 uniform vec3 uBackground;
 uniform float uExposure;
 uniform float uDarkOnLight;
+uniform float uTone;      // 0 exponential (legacy), 1 AgX, 2 Khronos Neutral, 3 none
+uniform float uBlack;     // black point, subtracted after the curve
+uniform float uEncode;    // 1 = apply the sRGB OETF (correct), 0 = the old raw write
+uniform float uGamma;     // density contrast, applied BEFORE the display encode
 out vec4 fragColor;
+
+${TONEMAP_GLSL}
+
+vec3 toneMap(vec3 c) {
+  if (uTone < 0.5) return exponentialToneMap(c, uExposure);
+  if (uTone < 1.5) return agxToneMap(c, uExposure);
+  if (uTone < 2.5) return neutralToneMap(c, uExposure);
+  return clamp(c * uExposure, 0.0, 1.0);
+}
 
 void main() {
   vec3 hdr = max(vec3(0.0), texture(uScene, vUv).rgb);
 
-  // Film response. Monotonic, saturates to 1 without ever clipping a channel
-  // against the others.
-  vec3 mapped = vec3(1.0) - exp(-hdr * uExposure);
-
   vec3 outRgb;
   if (uDarkOnLight > 0.5) {
     // Printed plate: density absorbs light instead of emitting it.
-    float amount = max(mapped.r, max(mapped.g, mapped.b));
+    //
+    // The mix happens in DISPLAY space, not in linear light, and that is
+    // deliberate. Ink coverage on paper is a halftone fraction — the eye reads
+    // it as a proportion of covered area, which is a perceptual quantity, not a
+    // radiometric one. Mixing paper toward ink in linear light and then encoding
+    // was measured (docs/render-ablation.json, and by looking) to bleach the
+    // plate into a grey ghost with the Kirkwood lanes barely present.
+    vec3 mapped = toneMap(hdr);
+    // No density gamma here: the plate already mixes in display space, so it
+    // never lost the contrast the dusk stage has to put back.
+    float amount = clamp(max(mapped.r, max(mapped.g, mapped.b)), 0.0, 1.0);
     float peak = max(hdr.r, max(hdr.g, hdr.b));
     vec3 hue = peak > 1e-5 ? hdr / peak : vec3(1.0);
-    vec3 ink = hue * 0.30;
-    outRgb = mix(uBackground, ink, amount);
+    // 0.30 is a DISPLAY-space density — 30 % of full scale, the reflectance of a
+    // heavy ink — not a linear radiance. It is the number the plate shipped with
+    // and it was always being written straight to the framebuffer, so encoding
+    // it a second time is what bleached the plate. The paper, by contrast, comes
+    // from a hex colour that three has already decoded to linear, so it DOES
+    // need re-encoding to land on the 0xf7f6f2 it names.
+    vec3 inkDisp = hue * 0.30;
+    vec3 paperDisp = uEncode > 0.5 ? sRGBTransferOETF(clamp(uBackground, 0.0, 1.0)) : uBackground;
+    fragColor = vec4(mix(paperDisp, inkDisp, amount), 1.0);
+    return;
   } else {
-    outRgb = uBackground + mapped * (1.0 - uBackground);
+    // The background is a radiance floor, not a screen-blend afterthought: the
+    // bodies ADD to it and the whole sum goes through one curve. That is what
+    // gives the frame a single, real black point instead of a lifted grey one.
+    outRgb = toneMap(hdr + uBackground);
+
+    // Density contrast. This buffer does not hold radiance, it holds accumulated
+    // per-body alpha — a density map. A display transfer function designed for
+    // photographs lifts the low-density wings of the belt, and the low-density
+    // wings ARE the Kirkwood gaps. So the contrast the encode removes is put back
+    // here as a named, measured control rather than left to be an accident of
+    // whichever curve happens to be last. Measured: docs/render-ablation.json.
+    outRgb = pow(max(vec3(0.0), outRgb), vec3(uGamma));
+
+    outRgb = max(vec3(0.0), outRgb - vec3(uBlack)) / max(1e-4, 1.0 - uBlack);
   }
+
+  if (uEncode > 0.5) outRgb = sRGBTransferOETF(clamp(outRgb, 0.0, 1.0));
   fragColor = vec4(outRgb, 1.0);
 }
 `;

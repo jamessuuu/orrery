@@ -105,7 +105,18 @@ async function boot() {
   const hud = $('hud');
   hud.hidden = false;
 
-  const app = new Orrery($('stage'));
+  // Render-pipeline ablation switches. Defaults are the shipped configuration;
+  // scripts/render-ablation.mjs drives these so every rendering claim in the
+  // README is a measurement of the code that actually ships, one variable at a
+  // time, rather than of a parallel test build.
+  const q = new URLSearchParams(location.search);
+  const app = new Orrery($('stage'), {
+    tone: q.get('tone') || undefined,
+    encode: q.get('encode') === '0' ? false : undefined,
+    black: q.has('black') ? Number(q.get('black')) : undefined,
+    exposure: q.has('exposure') ? Number(q.get('exposure')) : undefined,
+    gamma: q.has('gamma') ? Number(q.get('gamma')) : undefined,
+  });
   window.addEventListener('resize', () => app.resize());
   app.setStage('dusk');
 

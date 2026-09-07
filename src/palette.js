@@ -76,6 +76,11 @@ export const STAGE = {
     sun: [1.0, 0.86, 0.52],
     bodyOpacity: 0.085,
     additive: true,
+    // Exposure into the tone curve. Lower than the legacy exponential curve's
+    // 1.0 because the composite now applies the sRGB transfer function it was
+    // always missing, which lifts every mid-tone.
+    exposure: 0.62,
+    exposureDark: 0.62,
   },
   daylight: {
     clear: 0xf7f6f2,
@@ -84,5 +89,9 @@ export const STAGE = {
     sun: [0.85, 0.52, 0.05],
     bodyOpacity: 0.075,
     additive: false,
+    // The plate needs more exposure than the dusk stage: the ink model turns
+    // density into coverage, and a coverage of 0.3 is a pale grey, not a mark.
+    exposure: 1.9,
+    exposureDark: 1.9,
   },
 };
